@@ -1,0 +1,23 @@
+{
+    "name": "pushinbr/pam-native-toast",
+    "description": "Optional native toast for PAM Native.",
+    "type": "pam-native-plugin",
+    "license": "Apache-2.0",
+    "require": {
+        "php": "^8.5",
+        "pushinbr/pam-native": "^1.46"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pam\\Native\\Toast\\": "src/"
+        }
+    },
+    "extra": {
+        "pam-native": {
+            "plugin": "pam-native.plugin.json"
+        }
+    },
+    "scripts": {
+        "test": "php tests/run.php"
+    }
+}
