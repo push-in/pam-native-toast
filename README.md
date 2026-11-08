@@ -1,10 +1,10 @@
 # PAM Native Toast
 
-Plugin opcional `pushinbr/pam-native-toast` para PHP 8.5 e PAM Native 1.46.
+Plugin opcional `pushinbr/pam-native-toast` para PHP 8.5 e PAM Native 1.46.6 ou superior (a versão que tira o toast do núcleo).
 Código Apache-2.0. Android API 26+ e iOS 15+.
 
 ```sh
-composer require pushinbr/pam-native-toast:0.1.0
+composer require pushinbr/pam-native-toast:^0.1.1
 ```
 
 O Composer e o launcher PAM descobrem `pam-native.plugin.json`, registram o
