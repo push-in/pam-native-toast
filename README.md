@@ -53,7 +53,7 @@ ARGB colors, fonts, icons, border, radius, dimensions and variants keep the same
 
 | Platform | Support | Notes |
 | --- | --- | --- |
-| Android | API 26+ | Kotlin, `androidx.core:core-ktx` 1.17.0 |
+| Android | API 24+ | Kotlin, `androidx.core:core-ktx` 1.17.0 |
 | iOS | 15.0+ | UIKit, CoreText, ImageIO |
 | PAM Native | 1.46.6 to < 2.0.0 | From `pam-native.plugin.json`; PHP 8.5+ |
 

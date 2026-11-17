@@ -10,7 +10,7 @@
     },
     "android": {
         "namespace": "dev.pam.toast",
-        "minSdk": 26,
+        "minSdk": 24,
         "sourceDirs": [
             "android/src/main/kotlin"
         ],

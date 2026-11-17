@@ -16,11 +16,24 @@ internal class ToastTypefaceLoader(context: Context) {
         if (assetPath != null) {
             val key = "$assetPath:$resolvedWeight:$italic"
             return assetFonts[key] ?: runCatching {
-                Typeface.Builder(assets, assetPath)
-                    .setWeight(resolvedWeight)
-                    .setItalic(italic)
-                    .setFontVariationSettings("'wght' $resolvedWeight")
-                    .build()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Typeface.Builder(assets, assetPath)
+                        .setWeight(resolvedWeight)
+                        .setItalic(italic)
+                        .setFontVariationSettings("'wght' $resolvedWeight")
+                        .build()
+                } else {
+                    // Android 7.x: no variable axes; the platform synthesizes the style.
+                    Typeface.create(
+                        Typeface.createFromAsset(assets, assetPath),
+                        when {
+                            resolvedWeight >= 600 && italic -> Typeface.BOLD_ITALIC
+                            resolvedWeight >= 600 -> Typeface.BOLD
+                            italic -> Typeface.ITALIC
+                            else -> Typeface.NORMAL
+                        },
+                    )
+                }
             }.onFailure {
                 Log.w(TAG, "Unable to load packaged font $assetPath", it)
             }.getOrNull()?.also { assetFonts.putIfAbsent(key, it) }
@@ -34,7 +47,11 @@ internal class ToastTypefaceLoader(context: Context) {
                 // as is (no fake bold); otherwise the platform synthesizes the
                 // style from the closest file, like React Native's
                 // Typeface.create(typeface, weight, italic).
-                val base = Typeface.Builder(assets, path).build()
+                val base = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    Typeface.Builder(assets, path).build()
+                } else {
+                    Typeface.createFromAsset(assets, path)
+                }
                 when {
                     exactStyle -> base
                     Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> Typeface.create(base, resolvedWeight, italic)

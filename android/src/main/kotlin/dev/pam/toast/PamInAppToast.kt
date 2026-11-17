@@ -1,5 +1,9 @@
 package dev.pam.toast
 
+import android.animation.ValueAnimator
+import android.content.Context
+import android.provider.Settings
+import android.os.Build
 import android.app.Activity
 import android.graphics.BitmapFactory
 import android.graphics.Typeface
@@ -169,14 +173,14 @@ internal object PamInAppToast {
         card.post {
             if (container.parent == null) return@post
             card.translationY = if (spec.bottom) hidden() else -hidden()
-            card.animate().translationY(0f).alpha(1f).setDuration(if (android.animation.ValueAnimator.areAnimatorsEnabled()) ANIMATION_MS else 0L).start()
+            card.animate().translationY(0f).alpha(1f).setDuration(if (animatorsEnabled(card.context)) ANIMATION_MS else 0L).start()
         }
         val dismiss = Runnable {
             if (container.parent == null) return@Runnable
             card.animate()
                 .translationY(if (spec.bottom) hidden() else -hidden())
                 .alpha(0f)
-                .setDuration(if (android.animation.ValueAnimator.areAnimatorsEnabled()) ANIMATION_MS else 0L)
+                .setDuration(if (animatorsEnabled(card.context)) ANIMATION_MS else 0L)
                 .withEndAction { (container.parent as? ViewGroup)?.removeView(container) }
                 .start()
         }
@@ -288,3 +292,13 @@ internal object PamInAppToast {
 
     private const val MAX_ICON_BYTES = 16 * 1024
 }
+
+/** [ValueAnimator.areAnimatorsEnabled] is API 26+; Android 7.x reads the duration scale. */
+private fun animatorsEnabled(context: Context): Boolean =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        ValueAnimator.areAnimatorsEnabled()
+    } else {
+        runCatching {
+            Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) != 0f
+        }.getOrDefault(true)
+    }
